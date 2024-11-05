@@ -9,8 +9,69 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const ativarEsteira = async () => {
+  try {
+      const response = await fetch('http://localhost:8000/plc/rockwell/write', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              ip: '192.168.1.61', // IP do Rockwell
+              data_type: 'BOOL', // Tipo de dado para ativação 
+              tag: {                    
+                  "name": "Power_Flex_ESTEIRA:O.Start"
+              },
+              value: 1 // Valor que ativa a planta (1 para ligar, 0 para desligar)
+          }),
+      });
+
+      if (response.ok) {
+          Alert.alert('Planta ativada com sucesso!');
+      } else {
+          Alert.alert('Erro ao ativar a planta');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+};
+
+const desativarEsteira = async () => {
+  try {
+      const response = await fetch('http://localhost:8000/plc/rockwell/write', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              ip: '192.168.1.61', // IP do Rockwell
+              data_type: 'BOOL', // Tipo de dado para ativação 
+              tag: {                    
+                  "name": "Power_Flex_ESTEIRA:O.Start"
+              },
+              value: 0 // Valor que ativa a planta (1 para ligar, 0 para desligar)
+          }),
+      });
+
+      if (response.ok) {
+          Alert.alert('Planta ativada com sucesso!');
+      } else {
+          Alert.alert('Erro ao ativar a planta');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+};
+
+
 const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }) => {
   const [frequencia, setFrequencia] = useState('10 Hz'); // valor inicial da frequência
+
+  const [ativo, setAtivo] = useState(false);
+
+  const vdd = () => {
+    setAtivo(!ativo);
+  };
 
 
   const estaçõesAtivas = [
@@ -20,68 +81,7 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
     { nome: 'Saída', ativa: false },
   ];
 
-  
-  // Função para fazer a chamada de ativação
-  const ativarEsteira = async () => {
-      try {
-          // Substitua pelo IP correto do PLC e informações da tag apropriada
-          const response = await fetch('http://localhost:8000/plc/siemens/write', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  ip: '192.168.1.10', // IP do seu PLC Siemens ou Rockwell
-                  data_type: 'BOOL', // Tipo de dado para ativação (provavelmente um booleano)
-                  tag: {
-                      db_number: 1, // Exemplo de DB para Siemens, configure conforme seu PLC
-                      offset: 0, // Offset da tag específica
-                      bit_offset: 0 // Bit se necessário
-                  },
-                  value: 1 // Valor que ativa a planta (1 para ligar, 0 para desligar)
-              }),
-          });
-  
-          if (response.ok) {
-              Alert.alert('Planta ativada com sucesso!');
-          } else {
-              Alert.alert('Erro ao ativar a planta');
-          }
-      } catch (error) {
-          console.error(error);
-      }
-  };
-
-  const desativarEsteira = async () => {
-      try {
-          // Substitua pelo IP correto do PLC e informações da tag apropriada
-          const response = await fetch('http://localhost:8000/plc/siemens/write', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  ip: '192.168.1.10', // IP do seu PLC Siemens ou Rockwell
-                  data_type: 'BOOL', // Tipo de dado para desativação (provavelmente um booleano)
-                  tag: {
-                      db_number: 1, // Exemplo de DB para Siemens, configure conforme seu PLC
-                      offset: 0, // Offset da tag fkkica
-                      bit_offset: 0 // Bit seácil
-                  },
-                  value: 0 // Valor que desativa a planta (1 para ligar, 0 para desligar)
-              }),
-          });
-  
-          if (response.ok) {
-              Alert.alert('Planta desativada com sucesso!');
-          } else {
-              Alert.alert('Erro ao desativar a planta');
-          }
-      } catch (error) {
-          console.error(error);
-      }
-  };
-  
+    
 
   return (
     <View style={styles.container}>
@@ -91,14 +91,22 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
       <View style={styles.content}>
         <View style={styles.buttonContainer}>
 
-          <TouchableOpacity onPress={ativarEsteira} style={styles.button}>
-            <MaterialIcons name="arrow-forward-ios" size={24} color="#fff" />
-            <Text style={styles.buttonText}>Ativar Esteira</Text>
+          <TouchableOpacity style={[styles.button, ativo ? styles.buttonAtivo : styles.buttonInativo]}
+          onPress={ativarEsteira}
+          >
+            <Text style={styles.buttonText}>{ativo ? 'IGNORE' : 'IGNORE'}</Text>
+            </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button}
+          onPress={ativarEsteira}
+          >
+            <Text style={styles.buttonText}>Ligar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={desativarEsteira} style={styles.button}>
-            <MaterialIcons name="arrow-forward-ios" size={24} color="#fff" />
-            <Text style={styles.buttonText}>Desativar Esteira</Text>
+          <TouchableOpacity style={styles.button}
+          onPress={desativarEsteira}
+          >
+            <Text style={styles.buttonText}>Desligar</Text>
           </TouchableOpacity>
 
           <View style={styles.frequenciaContainer}>
@@ -145,10 +153,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#007AFF',
-    paddingVertical: 12,
+    paddingVertical: 24,
     paddingHorizontal: 24,
     borderRadius: 4,
-    marginBottom: 8,
+    marginBottom: 32,
   },
   buttonText: {
     color: '#fff',
@@ -199,6 +207,12 @@ const styles = StyleSheet.create({
   ledText: {
     fontSize: 24,
     color: '#333',
+  },
+  buttonAtivo: {
+    backgroundColor: '#34C759',
+  },
+  buttonInativo: {
+    backgroundColor: '#FF3B3F',
   },
 });
 
