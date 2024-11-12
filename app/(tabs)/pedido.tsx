@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Modal, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Modal, View, Text, TextInput, TouchableOpacity, Image, Alert, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { NavigationContainer, NavigationProp  } from '@react-navigation/native';
@@ -9,6 +9,47 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
+
+const config_pedido = {
+  ip: '192.168.1.24',          // IP do Siemens
+  data_type: 'INT',            // Tipo de dado (BOOL, INT, REAL, STRING)
+  Value: 0,                // Valor para o comando
+  furacao3s: 2,
+  limp_parcial: 4,
+  inspecao: 8,
+  limp_completa: 16,
+  furacao5s: 32
+};
+
+const Pedido = async (operationValue: number) => {
+  try {
+      const response = await fetch('http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${config_pedido.Value}', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+                  "db_number": 29,
+                  "offset": 4,
+                  "bit_offset": 0
+          }),
+      });
+
+      // Verifica se a resposta é bem-sucedida
+      if (response.ok) {
+          console.log('Pedido enviado com sucesso!');
+      } else {
+          // Exibe o status e a resposta do servidor para ajudar na depuração
+          console.log('Erro ao enviar o pedido');
+          console.log('Status:', response.status);  // Código de status HTTP
+          const responseText = await response.text();
+          console.log('Resposta:', responseText);   // Corpo da resposta do erro
+      }
+  } catch (error) {
+      console.error('Erro:', error);
+  }
+};
+
 
 const PedidoScreen = () => {
 
@@ -32,74 +73,72 @@ const PedidoScreen = () => {
     setModalVisible2(false);
   };
 
+  const [selecionado, setSelecionado] = useState(false);
 
+  const handlePress = () => {
+    setSelecionado(!selecionado);
+  };
+
+    // Estado para armazenar as operações selecionadas
+    const [selectedOperations, setSelectedOperations] = useState<any[]>([]);
+
+    // Função para alternar a seleção de uma operação
+    const toggleOperation = (operationValue: any) => {
+      setSelectedOperations((prevOperations) => {
+        if (prevOperations.includes(operationValue)) {
+          // Remove a operação se já estiver selecionada
+          return prevOperations.filter((value) => value !== operationValue);
+        } else {
+          // Adiciona a operação se ainda não estiver selecionada
+          return [...prevOperations, operationValue];
+        }
+      });
+    };
+  
+    // Calcula o valor total das operações selecionadas
+    const calculateTotalValue = () => {
+      return selectedOperations.reduce((total, value) => total + value, 0);
+    };
+  
+  
+  
   return (
+
+
     <View style={styles.container}>
 
       <View style={styles.buttonContainer}>
         <View style={styles.row}>
-          <TouchableOpacity onPress={handleFuracaoPress} style={styles.button}>
-            <Text style={styles.buttonText}>Furação</Text>
+          <TouchableOpacity onPress={() => toggleOperation(config_pedido.furacao3s)} style={[styles.button, opcaoSelecionada === '3s' ? styles.selecionado : {}]}>
+            <Text style={styles.buttonText}>Furação 3s</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLimpezaPress} style={styles.button}>
-            <Text style={styles.buttonText}>Limpeza</Text>
+          <TouchableOpacity onPress={() => toggleOperation(config_pedido.furacao5s)} style={[styles.button, opcaoSelecionada === '5s' ? styles.selecionado : {}]}>
+            <Text style={styles.buttonText}>Furação 5s</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.selectedOptionText}>{opcaoSelecionada}</Text>
 
-        <View style={styles.centeredView}>
-
-        <Modal 
-        visible={modalVisible} 
-        transparent={true}
-        animationType='slide'
-        onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalView}>
-            <Text>Selecione uma opção:</Text>
-            <TouchableOpacity onPress={() => handleOpcaoPress('3s')}>  
-              <Text>3s</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleOpcaoPress('5s')}>
-              <Text>5s</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        <Modal
-        visible={modalVisible2}
-        transparent={true}
-        animationType='slide'
-        onRequestClose={() => setModalVisible2(false)}
-        >
-        <View style={styles.modalView}>
-            <Text>Selecione uma opção:</Text>
-            <TouchableOpacity onPress={() => handleOpcaoPress('Parcial')}>  
-              <Text>Parcial</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleOpcaoPress('Completa')}>
-              <Text>Completa</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      </View>
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Inspeção</Text>
+          <TouchableOpacity onPress={() => toggleOperation(config_pedido.limp_parcial)} style={[styles.button, opcaoSelecionada === 'Parcial' ? styles.selecionado : {}]}>
+            <Text style={styles.buttonText}>Limpeza Parcial</Text>
           </TouchableOpacity>
-        </View>        
-
+          <TouchableOpacity onPress={() => toggleOperation(config_pedido.limp_completa)} style={[styles.button, opcaoSelecionada === 'Completa' ? styles.selecionado : {}]}>
+            <Text style={styles.buttonText}>Limpeza Completa</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View >
-        <TextInput style={styles.input} placeholder="Quantidade" >
-        </TextInput>
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.buttonText}>Adicionar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+            <View >
+                  <TouchableOpacity onPress={() => toggleOperation(config_pedido.inspecao)} style={[styles.button, opcaoSelecionada === 'Completa' ? styles.selecionado : {}]}>
+                    <Text style={styles.buttonText}>Inspeção</Text>
+                </TouchableOpacity>
+                <Button
+                  title="Enviar Comando"
+                  onPress={() => Pedido(calculateTotalValue())}
+                />    
+            </View>
+          </View>
+        );
+      };
 
 const styles = StyleSheet.create({
   container: {
@@ -143,10 +182,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 20,
     marginHorizontal: 10,
-    width: 100,
+    width: 120,
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  selecionado: {
+    backgroundColor: '#4CAF50'
   },
   addButton: {
     backgroundColor: '#007AFF',
