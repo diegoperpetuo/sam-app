@@ -79,11 +79,6 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
 
   const [ativo, setAtivo] = useState(false);
 
-  const vdd = () => {
-    setAtivo(!ativo);
-  };
-
-
   const estaçõesAtivas = [
     { nome: 'Estação de Entrada', ativa: true },
     { nome: 'Inspeção', ativa: false },
@@ -113,19 +108,8 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
             <Text style={styles.buttonText}>Desligar</Text>
           </TouchableOpacity>
 
-          <View style={styles.frequenciaContainer}>
-            <Text style={styles.frequenciaLabel}>Frequência da Esteira:</Text>
-            <Text style={styles.frequenciaValue}>{frequencia}</Text>
-          </View>
         </View>
-        <View style={styles.ledsContainer}>
-          {estaçõesAtivas.map((estacao, index) => (
-            <View key={index} style={styles.ledContainer}>
-              <View style={[styles.led, estacao.ativa ? styles.ledAtiva : styles.ledInativa]} />
-              <Text style={styles.ledText}>{estacao.nome}</Text>
-            </View>
-          ))}
-        </View>
+
       </View>
     </View>
   );

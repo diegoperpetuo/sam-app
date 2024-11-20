@@ -37,7 +37,25 @@ export default function TabLayout() {
           )  
         }}
         />
-    </Tabs>
+        <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Status',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
+          )  
+        }}
+        />
+        <Tabs.Screen
+        name="status"
+        options={{
+          title: 'Status',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
+          )
+        }}
+        />
+      </Tabs>
   );
 }
 
