@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 
 const config_pedido = {
   ip: '192.168.1.24',
@@ -14,76 +13,117 @@ const App = () => {
   const [statusPeca3, setStatusPeca3] = useState<boolean | null>(null);
   const [statusPeca4, setStatusPeca4] = useState<boolean | null>(null);
 
-  const [estacao1, setEstacao1] = useState<boolean | null>(null);
-  const [estacao2, setEstacao2] = useState<boolean | null>(null);
-  const [estacao3, setEstacao3] = useState<boolean | null>(null);
-  const [estacao4, setEstacao4] = useState<boolean | null>(null);
+  const [idEstacao1, setIdEstacao1] = useState<number | null>(123);
+  const [idEstacao2, setIdEstacao2] = useState<number | null>(456);
+  const [idEstacao3, setIdEstacao3] = useState<number | null>(789);
+  const [idEstacao4, setIdEstacao4] = useState<number | null>(101);
 
-  const [limpeza, setLimpeza] = useState<boolean | null>(null);
+  const [idPeca0, setIdPeca0] = useState<number | null>(null);
+  const [idPeca1, setIdPeca1] = useState<number | null>(null);
+  const [idPeca2, setIdPeca2] = useState<number | null>(null);
+  const [idPeca3, setIdPeca3] = useState<number | null>(null);
 
-  const fetchStatus = async (offset: number, setStatus: React.Dispatch<React.SetStateAction<boolean | null>>) => {
+
+  const fetchIdPeca0 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             db_number: 29,
-            offset,
+            offset: 134,
             bit_offset: 0,
           }),
         }
       );
       const data = await response.json();
-      setStatus(data.value);
+      setIdPeca0(data.value); // Armazena o ID da peça
     } catch (error) {
-      console.error('Erro ao acessar status da peça:', error);
+      console.error('Erro ao acessar IdPeca:', error);
     }
   };
 
-  const fetchLimpeza = async (setStatus: React.Dispatch<React.SetStateAction<boolean | null>>) => {
+  const fetchIdPeca1 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             db_number: 29,
-            offset: 96,
+            offset: 146,
             bit_offset: 0,
           }),
         }
       );
       const data = await response.json();
-      setStatus(data.value);
+      setIdPeca1(data.value); // Armazena o ID da peça
     } catch (error) {
-      console.error('Erro ao acessar status de limpeza:', error);
+      console.error('Erro ao acessar IdPeca:', error);
     }
   };
+
+
+  const fetchIdPeca2 = async () => {
+    try {
+      const response = await fetch(
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            db_number: 29,
+            offset: 158,
+            bit_offset: 0,
+          }),
+        }
+      );
+      const data = await response.json();
+      setIdPeca2(data.value); // Armazena o ID da peça
+    } catch (error) {
+      console.error('Erro ao acessar IdPeca:', error);
+    }
+  };
+
+
+  const fetchIdPeca3 = async () => {
+    try {
+      const response = await fetch(
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            db_number: 29,
+            offset: 170,
+            bit_offset: 0,
+          }),
+        }
+      );
+      const data = await response.json();
+      setIdPeca3(data.value); // Armazena o ID da peça
+    } catch (error) {
+      console.error('Erro ao acessar IdPeca:', error);
+    }
+  };
+  
+
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchStatus(144, setStatusPeca1);
-      fetchStatus(156, setStatusPeca2);
-      fetchStatus(168, setStatusPeca3);
-      fetchStatus(180, setStatusPeca4);
-      fetchStatus(85, setEstacao1);
-      // fetchStatus(86, setEstacao2);
-      // fetchStatus(87, setEstacao3);
-      // fetchStatus(88, setEstacao4);
+      // Atualiza o ID da peça
+      fetchIdPeca0();
+      fetchIdPeca1();
+      fetchIdPeca2();
+      fetchIdPeca3();
     }, 2000);
-
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // Quando estacao1 for true, então buscamos o status de limpeza
-    if (estacao1 === true) {
-      fetchLimpeza(setLimpeza);
-    }
-  }, [estacao1]);
+
 
   return (
     <View style={styles.container}>
@@ -97,41 +137,65 @@ const App = () => {
           />
         </View>
         {/* Indicadores sobre a imagem */}
-        <View style={[styles.indicator, { top: '30%', left: '10%' }]}>
-          <FontAwesome
-            name="circle"
-            size={50}
-            color={statusPeca1 === true ? '#34A853' : '#EA4335'}
-          />
-          <Text style={styles.indicatorText}>Estação 1</Text>
-          {/* Exibe o valor de limpeza se estacao1 for true */}
-          {estacao1 && limpeza !== null && (
-            <Text style={styles.limpezaText}>{limpeza ? 'Limpeza em andamento' : 'Limpeza finalizada'}</Text>
-          )}
+        <View style={[styles.indicator, { top: '25%', left: '10%' }]}>
+          <View
+            style={[
+              styles.circle,
+              { backgroundColor: statusPeca1 === true ? '#34A853' : '#EA4335' },
+            ]}
+          >
+          <Text style={styles.circleText}>
+              {idPeca0 === 0 ? 'Sem peça no momento' : idPeca0 !== null ? `Peça: ${idPeca0}` : 'N/A'}
+          </Text>
+          </View>
+          <Text style={styles.indicatorText}>
+            <Text style={{ fontWeight: 'bold' }}>Estação 1</Text>
+          </Text>
         </View>
-        <View style={[styles.indicator, { top: '80%', left: '10%' }]}>
-          <FontAwesome
-            name="circle"
-            size={50}
-            color={statusPeca2 === true ? '#34A853' : '#EA4335'}
-          />
-          <Text style={styles.indicatorText}>Estação 2</Text>
+        <View style={[styles.indicator, { top: '75%', left: '10%' }]}>
+          <View
+            style={[
+              styles.circle,
+              { backgroundColor: statusPeca2 === true ? '#34A853' : '#EA4335' },
+            ]}
+          >
+          <Text style={styles.circleText}>
+              {idPeca1 === 0 ? 'Sem peça no momento' : idPeca1 !== null ? `Peça: ${idPeca1}` : 'N/A'}
+          </Text>
+          </View>
+          <Text style={styles.indicatorText}>
+            <Text style={{ fontWeight: 'bold' }}>Estação 2</Text>
+          </Text>
         </View>
-        <View style={[styles.indicator, { top: '30%', right: '10%' }]}>
-          <FontAwesome
-            name="circle"
-            size={50}
-            color={statusPeca3 === true ? '#34A853' : '#EA4335'}
-          />
-          <Text style={styles.indicatorText}>Estação 3</Text>
+        <View style={[styles.indicator, { top: '25%', right: '10%' }]}>
+          <View
+            style={[
+              styles.circle,
+              { backgroundColor: statusPeca3 === true ? '#34A853' : '#EA4335' },
+            ]}
+          >
+          <Text style={styles.circleText}>
+              {idPeca2 === 0 ? 'Sem peça no momento' : idPeca2 !== null ? `Peça: ${idPeca2}` : 'N/A'}
+          </Text>
+          </View>
+          <Text style={styles.indicatorText}>
+            <Text style={{ fontWeight: 'bold' }}>Estação 3</Text>
+          </Text>
         </View>
-        <View style={[styles.indicator, { top: '80%', right: '10%' }]}>
-          <FontAwesome
-            name="circle"
-            size={50}
-            color={statusPeca4 === true ? '#34A853' : '#EA4335'}
-          />
-          <Text style={styles.indicatorText}>Estação 4</Text>
+        <View style={[styles.indicator, { top: '75%', right: '10%' }]}>
+          <View
+            style={[
+              styles.circle,
+              { backgroundColor: statusPeca4 === true ? '#34A853' : '#EA4335' },
+            ]}
+          >
+          <Text style={styles.circleText}>
+              {idPeca3 === 0 ? 'Sem peça no momento' : idPeca3 !== null ? `Peça: ${idPeca3}` : 'N/A'}
+          </Text>
+          </View>
+          <Text style={styles.indicatorText}>
+            <Text style={{ fontWeight: 'bold' }}>Estação 4</Text>
+          </Text>
         </View>
       </View>
     </View>
@@ -149,12 +213,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 40,
     color: '#333',
   },
   map: {
-    width: 350,
-    height: 450,
+    width: 350, // Aumenta o tamanho do contêiner
+    height: 500, // Aumenta a altura
     position: 'relative',
   },
   imageContainer: {
@@ -168,23 +232,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#E3F2FD',
   },
   image: {
-    width: '110%',
-    height: '110%',
+    width: '150%', // Aumenta a largura
+    height: '150%', // Aumenta a altura
     transform: [{ rotate: '90deg' }],
   },
   indicator: {
     position: 'absolute',
     alignItems: 'center',
   },
+  circle: {
+    width: 70, // Aumenta o tamanho do círculo
+    height: 70,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  circleText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12,
+    textAlign: 'center',
+  },
   indicatorText: {
     marginTop: 8,
-    fontSize: 14,
+    fontSize: 16, // Aumenta o tamanho do texto
     color: '#333',
-  },
-  limpezaText: {
-    fontSize: 12,
-    color: '#333',
-    marginTop: 5,
   },
 });
 

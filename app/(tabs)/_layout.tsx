@@ -7,6 +7,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import Feather from '@expo/vector-icons/Feather';
 import { Tab } from 'react-native-elements/dist/tab/Tab';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -49,9 +51,9 @@ export default function TabLayout() {
         <Tabs.Screen
         name="status"
         options={{
-          title: 'Status',
+          title: 'Estações',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'list' : 'list-outline'} color={color} />
+            <MaterialCommunityIcons name="robot-industrial" size={24} color="black" />
           )
         }}
         />

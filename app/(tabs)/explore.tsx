@@ -14,15 +14,19 @@ const App = () => {
   const [statusSolicitado1, setStatusSolicitado1] = useState<boolean | null>(null);
   const [statusSolicitado2, setStatusSolicitado2] = useState<boolean | null>(null);
   const [statusSolicitado3, setStatusSolicitado3] = useState<boolean | null>(null);
+
     //ID das peças
   const [idPeca0, setIdPeca0,] = useState<number | null>(null);
   const [idPeca1, setIdPeca1,] = useState<number | null>(null);
   const [idPeca2, setIdPeca2,] = useState<number | null>(null);
   const [idPeca3, setIdPeca3,] = useState<number | null>(null);
   
-  
   const [dataHoraSolicitado, setDataHoraSolicitado] = useState<string | null>(null);
+
   const [dataHoraFinalizado, setDataHoraFinalizado] = useState<string | null>(null);
+  const [dataHoraFinalizado1, setDataHoraFinalizado1] = useState<string | null>(null);
+  const [dataHoraFinalizado2, setDataHoraFinalizado2] = useState<string | null>(null);
+  const [dataHoraFinalizado3, setDataHoraFinalizado3] = useState<string | null>(null);
   
   const [Processo0, setProcesso0] = useState<string | null>(null);
   const [Processo1, setProcesso1] = useState<string | null>(null);
@@ -54,7 +58,7 @@ const App = () => {
   const fetchProducao0 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,7 +75,7 @@ const App = () => {
   const fetchProducao1 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -88,7 +92,7 @@ const App = () => {
   const fetchProducao2 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -105,7 +109,7 @@ const App = () => {
   const fetchProducao3 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -122,7 +126,7 @@ const App = () => {
   const est_processo0 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -140,7 +144,7 @@ const App = () => {
   const est_processo1 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -157,7 +161,7 @@ const App = () => {
   const est_processo2 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -174,7 +178,7 @@ const App = () => {
   const est_processo3 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -193,7 +197,7 @@ const App = () => {
   const fetchIdPeca0 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -214,7 +218,7 @@ const App = () => {
   const fetchIdPeca1 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -236,7 +240,7 @@ const App = () => {
   const fetchIdPeca2 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -258,7 +262,7 @@ const App = () => {
   const fetchIdPeca3 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -281,6 +285,9 @@ const App = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchProducao0();
+      fetchProducao1();
+      fetchProducao2();
+      fetchProducao3();
       est_processo0();
       est_processo1();
       est_processo2();
@@ -296,15 +303,46 @@ const App = () => {
 
   // Captura a data e hora quando pedido é solicitado
   useEffect(() => {
-    if (statusSolicitado === true || statusSolicitado1 === true || statusSolicitado2 === true || statusSolicitado3 === true || !dataHoraSolicitado) {
+    if (statusSolicitado === true ||!dataHoraSolicitado) {
       const agora = new Date();
       const dataHoraFormatada = `${agora.toLocaleDateString()} ${agora.toLocaleTimeString()}`;
       setDataHoraSolicitado(dataHoraFormatada);
+
     }
-    if (statusSolicitado === false || statusSolicitado1 === false || statusSolicitado2 === false || statusSolicitado3 === false) {
+    if (statusSolicitado1 === true) {
+      const agora1 = new Date();
+      const dataHoraFormatada1 = `${agora1.toLocaleDateString()} ${agora1.toLocaleTimeString()}`;
+      setDataHoraSolicitado(dataHoraFormatada1);
+    }
+    if (statusSolicitado2 === true) {
+      const agora2 = new Date();
+      const dataHoraFormatada2 = `${agora2.toLocaleDateString()} ${agora2.toLocaleTimeString()}`;
+      setDataHoraSolicitado(dataHoraFormatada2);
+    }
+    if (statusSolicitado3 === true) {
+      const agora3 = new Date();
+      const dataHoraFormatada3 = `${agora3.toLocaleDateString()} ${agora3.toLocaleTimeString()}`;
+      setDataHoraSolicitado(dataHoraFormatada3);
+    }
+    if (statusSolicitado === false) {
       const agora = new Date();
       const dataHoraFormatada = `${agora.toLocaleDateString()} ${agora.toLocaleTimeString()}`;
       setDataHoraFinalizado(dataHoraFormatada);
+    }
+    if (statusSolicitado1 === false) {
+      const agora1 = new Date();
+      const dataHoraFormatada1 = `${agora1.toLocaleDateString()} ${agora1.toLocaleTimeString()}`;
+      setDataHoraFinalizado(dataHoraFormatada1);
+    }
+    if (statusSolicitado2 === false) {
+      const agora2 = new Date();
+      const dataHoraFormatada2 = `${agora2.toLocaleDateString()} ${agora2.toLocaleTimeString()}`;
+      setDataHoraFinalizado(dataHoraFormatada2);
+    }
+    if (statusSolicitado3 === false) {
+      const agora3 = new Date();
+      const dataHoraFormatada3 = `${agora3.toLocaleDateString()} ${agora3.toLocaleTimeString()}`;
+      setDataHoraFinalizado(dataHoraFormatada3);
     }
   }, [statusSolicitado]);
 
@@ -323,7 +361,7 @@ const App = () => {
             name="circle"
             size={24}
             color={
-              idPeca0 === 0 
+              idPeca0 === 0 && statusSolicitado === null
                 ? '#CCCCCC' // Cor de "sem peça no momento"
                 : statusSolicitado === true
                 ? '#34A853' // Verde, se o status estiver solicitado
@@ -369,7 +407,7 @@ const App = () => {
             name="circle"
             size={24}
             color={
-              idPeca0 === 0 
+              idPeca1 === 0  && statusSolicitado1 === null
                 ? '#CCCCCC' // Cor de "sem peça no momento"
                 : statusSolicitado1 === true
                 ? '#34A853' // Verde, se o status estiver solicitado
@@ -402,7 +440,7 @@ const App = () => {
                 : 'Processo atual: Desconhecido'}
             </Text>
             <Text style={styles.dateTimeText}>
-              {statusSolicitado1 === true ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraSolicitado}`}
+              {statusSolicitado1 === true ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraFinalizado}`}
             </Text>
           </View>
         </View>
@@ -415,7 +453,7 @@ const App = () => {
             name="circle"
             size={24}
             color={
-              idPeca0 === 0 
+              idPeca2 === 0  && statusSolicitado2 === null
                 ? '#CCCCCC' // Cor de "sem peça no momento"
                 : statusSolicitado2 === true
                 ? '#34A853' // Verde, se o status estiver solicitado
@@ -448,7 +486,7 @@ const App = () => {
                 : 'Processo atual: Desconhecido'}
             </Text>
             <Text style={styles.dateTimeText}>
-              {statusSolicitado2 === true ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraSolicitado}`}
+              {statusSolicitado2 === true ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraFinalizado}`}
             </Text>
           </View>
         </View>
@@ -460,7 +498,7 @@ const App = () => {
             name="circle"
             size={24}
             color={
-              idPeca0 === 0 
+              idPeca3 === 0  && statusSolicitado3 === null
                 ? '#CCCCCC' // Cor de "sem peça no momento"
                 : statusSolicitado3 === true
                 ? '#34A853' // Verde, se o status estiver solicitado
@@ -493,7 +531,7 @@ const App = () => {
                 : 'Processo atual: Desconhecido'}
             </Text>
             <Text style={styles.dateTimeText}>
-              {statusSolicitado3 ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraSolicitado}`}
+              {statusSolicitado3 ? `Solicitado em: ${dataHoraSolicitado}` : `Finalizado em: ${dataHoraFinalizado}`}
             </Text>
           </View>
         </View>

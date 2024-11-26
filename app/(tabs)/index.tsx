@@ -99,13 +99,13 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
           <TouchableOpacity style={styles.buttonAtivo}
           onPress={ativarEsteira}
           >
-            <Text style={styles.buttonText}>Ligar</Text>
+            <Text style={styles.buttonText}>Ativar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.buttonInativo}
           onPress={desativarEsteira}
           >
-            <Text style={styles.buttonText}>Desligar</Text>
+            <Text style={styles.buttonText}>Desativar</Text>
           </TouchableOpacity>
 
         </View>
