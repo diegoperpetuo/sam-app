@@ -15,7 +15,7 @@ const config_pedido = {
 // Função para enviar o comando ao Siemens
 const Pedido = async (totalValue: number) => {
   try {
-    const response1 = await fetch(`https://b767-200-128-24-81.ngrok-free.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${totalValue}`, {
+    const response1 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${totalValue}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -42,7 +42,7 @@ const Pedido = async (totalValue: number) => {
 }
 
 const Pedido2 = async () => {
-  const response2 = await fetch(`https://b767-200-128-24-81.ngrok-free.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=0`, {
+  const response2 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=0`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ const Pedido2 = async () => {
   
 const Pedido3 = async () => {
   
-  const response3 = await fetch(`https://b767-200-128-24-81.ngrok-free.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=1`, {
+  const response3 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=1`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

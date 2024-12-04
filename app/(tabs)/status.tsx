@@ -27,7 +27,7 @@ const App = () => {
   const fetchIdPeca0 = async () => {
     try {
       const response = await fetch(
-        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -40,15 +40,16 @@ const App = () => {
       );
       const data = await response.json();
       setIdPeca0(data.value); // Armazena o ID da peça
+      setStatusPeca1(data.value !== 0 && data.value !== null); // Atualiza o status da peça
     } catch (error) {
-      console.error('Erro ao acessar IdPeca:', error);
+      console.error('Erro ao acessar IdPeca0:', error);
     }
   };
-
+  
   const fetchIdPeca1 = async () => {
     try {
       const response = await fetch(
-        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -61,16 +62,16 @@ const App = () => {
       );
       const data = await response.json();
       setIdPeca1(data.value); // Armazena o ID da peça
+      setStatusPeca2(data.value !== 0 && data.value !== null); // Atualiza o status da peça
     } catch (error) {
-      console.error('Erro ao acessar IdPeca:', error);
+      console.error('Erro ao acessar IdPeca1:', error);
     }
   };
-
-
+  
   const fetchIdPeca2 = async () => {
     try {
       const response = await fetch(
-        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -83,16 +84,16 @@ const App = () => {
       );
       const data = await response.json();
       setIdPeca2(data.value); // Armazena o ID da peça
+      setStatusPeca3(data.value !== 0 && data.value !== null); // Atualiza o status da peça
     } catch (error) {
-      console.error('Erro ao acessar IdPeca:', error);
+      console.error('Erro ao acessar IdPeca2:', error);
     }
   };
-
-
+  
   const fetchIdPeca3 = async () => {
     try {
       const response = await fetch(
-        `https://b767-200-128-24-81.ngrok-free.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -105,10 +106,12 @@ const App = () => {
       );
       const data = await response.json();
       setIdPeca3(data.value); // Armazena o ID da peça
+      setStatusPeca4(data.value !== 0 && data.value !== null); // Atualiza o status da peça
     } catch (error) {
-      console.error('Erro ao acessar IdPeca:', error);
+      console.error('Erro ao acessar IdPeca3:', error);
     }
   };
+  
   
 
 
@@ -141,7 +144,10 @@ const App = () => {
           <View
             style={[
               styles.circle,
-              { backgroundColor: statusPeca1 === true ? '#34A853' : '#EA4335' },
+              { backgroundColor: statusPeca1 === true 
+                ? '#34A853' 
+                : '#EA4335' 
+              },
             ]}
           >
           <Text style={styles.circleText}>
