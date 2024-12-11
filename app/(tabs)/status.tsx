@@ -24,6 +24,52 @@ const App = () => {
   const [idPeca3, setIdPeca3] = useState<number | null>(null);
 
 
+const IdEstacao0 = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          db_number: 29,
+          offset: 0,
+          bit_offset: 0,
+        }),
+      }
+    );
+    const data = await response.json();
+    setIdEstacao1(data.value); // Armazena o ID da peça
+    setStatusPeca1(data.value !== 0 && data.value !== null); // Atualiza o status da peça
+  } catch (error) {
+    console.error('Erro ao acessar IdPeca0:', error);
+  }
+};
+
+const IdEstacao1 = async () => {
+  try {
+    const response = await fetch(
+      `http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          db_number: 29,
+          offset: 0,
+          bit_offset: 0,
+        }),
+      }
+    );
+    const data = await response.json();
+    setIdEstacao2(data.value); // Armazena o ID da peça
+    setStatusPeca2(data.value !== 0 && data.value !== null); // Atualiza o status da peça
+  } catch (error) {
+    console.error('Erro ao acessar IdPeca0:', error);
+  }
+};
+          
+
+
   const fetchIdPeca0 = async () => {
     try {
       const response = await fetch(
@@ -122,6 +168,8 @@ const App = () => {
       fetchIdPeca1();
       fetchIdPeca2();
       fetchIdPeca3();
+      //teste
+      IdEstacao0();
     }, 2000);
     return () => clearInterval(interval);
   }, []);

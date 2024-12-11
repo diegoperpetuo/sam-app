@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 const config_pedido = {
   ip: '192.168.1.24',
@@ -10,6 +11,27 @@ const config_pedido = {
   inspecao: 8,
   limp_completa: 16,
   furacao5s: 32,
+};
+
+
+
+const QtdPeca = async (qtdValue: number) => {
+  try {
+    const response2 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${qtdValue}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "db_number": 29,
+        "offset": 130,
+        "bit_offset": 0
+      }),
+    }
+    );
+  } catch (error) {
+    console.error('Erro:', error);
+  }
 };
 
 // Função para enviar o comando ao Siemens
@@ -35,10 +57,10 @@ const Pedido = async (totalValue: number) => {
       const responseText = await response1.text();
       console.log('Resposta:', responseText);
     }
+
   } catch (error) {
     console.error('Erro:', error);
   }
-
 }
 
 const Pedido2 = async () => {
@@ -54,9 +76,8 @@ const Pedido2 = async () => {
     }),
   });
 }
-  
+
 const Pedido3 = async () => {
-  
   const response3 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=1`, {
     method: 'POST',
     headers: {
@@ -70,34 +91,81 @@ const Pedido3 = async () => {
   });
 };
 
+const Alerta = async (setMessage: (message: string) => void, fadeAnim: Animated.Value) => {
+  try {
+    const response = await fetch(`http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        db_number: 29,
+        offset: 0,
+        bit_offset: 2,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.value === true) {
+      setMessage('Pedido enviado com sucesso!');
+    } else {
+      setMessage('Não foi possível enviar o pedido');
+    }
+
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start(() => {
+      fadeAnim.setValue(1);
+      setMessage('');
+    });
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+};
+
+
+const TipoPeca = async () => {
+  const response3 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=2`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "db_number": 29,
+      "offset": 2,
+      "bit_offset": 0
+    }),
+  });
+};
 
 const App = () => {
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+
+  
+  const [qtdValue, setQtdValue] = useState<number>(1); // Iniciar com 1
+  
   const fadeAnim = new Animated.Value(1);
 
-  // Função para alternar a seleção de uma operação
-  const toggleOperation = (operationValue: number) => {
-    setSelectedOperations((prevOperations) => {
-      if (prevOperations.includes(operationValue)) {
-        return prevOperations.filter((value) => value !== operationValue);
-      } else {
-        return [...prevOperations, operationValue];
-      }
-    });
+  const handleQtdValueChange = (value: number) => {
+    setQtdValue(value);
   };
-
-  // Calcula o valor total das operações selecionadas
+    
   const calculateTotalValue = () => {
     return selectedOperations.reduce((total, value) => total + value, 0);
   };
 
-  // Função para exibir a mensagem de confirmação
+
+
+  
   const showToast = () => {
     setShowConfirmation(true);
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 3000, // Tempo para o desaparecimento (3 segundos)
+      duration: 3000,
       useNativeDriver: true,
     }).start(() => {
       setShowConfirmation(false);
@@ -105,36 +173,21 @@ const App = () => {
     });
   };
 
-  // Função para enviar o comando
-  const handleSendCommand = () => {
-    const totalValue = calculateTotalValue();
-    console.log('Comando enviado:', totalValue);
-
-    // Envia o comando ao Siemens
-    Pedido(totalValue);
-    setTimeout(() => {
-     Pedido2();
-     Pedido3();
-     Pedido2();
-   }, 1000); // 1000 ms = 1 segundo
-
-    // Exibe o Toast de confirmação
-    showToast();
-
-    // Limpa os botões selecionados
-    setSelectedOperations([]);
+  const toggleOperation = (operationValue: number) => {
+    if (selectedOperations.includes(operationValue)) {
+      setSelectedOperations(selectedOperations.filter(value => value !== operationValue));
+    } else {
+      setSelectedOperations([...selectedOperations, operationValue]);
+    }
   };
-
-  // Função para limpar as seleções
+  
   const handleClearSelections = () => {
     setSelectedOperations([]);
   };
-
-  // Verifica se uma operação está selecionada
-  const isSelected = (operationValue: number) =>
+  
+  const isSelected = (operationValue: number) => 
     selectedOperations.includes(operationValue);
-
-  // Verifica se o botão deve ser desativado
+  
   const isDisabled = (operationValue: number) => {
     if (operationValue === config_pedido.furacao3s) {
       return selectedOperations.includes(config_pedido.furacao5s);
@@ -150,20 +203,36 @@ const App = () => {
     }
     return false;
   };
-
+  
+  const handleSendCommand = () => {
+    const totalValue = calculateTotalValue();
+    Pedido(totalValue);
+    setTimeout(() => {
+      TipoPeca();
+      QtdPeca(qtdValue);
+      Pedido3();
+      setQtdValue(1);
+      Pedido2();
+      Alerta(setToastMessage, fadeAnim);
+    }, 1000);
+    setSelectedOperations([]);
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Pedidos</Text>
       </View>
 
-      {showConfirmation && (
+      {toastMessage && (
         <Animated.View
-          style={[styles.toastContainer, { opacity: fadeAnim }]}
+          style={[styles.toastContainer, toastMessage === 'Não foi possível enviar o pedido' ? styles.toastError : styles.toastSuccess, { opacity: fadeAnim }]}
         >
-          <Text style={styles.toastText}>Pedido enviado com sucesso!</Text>
+          <Text style={styles.toastText}>{toastMessage}</Text>
         </Animated.View>
       )}
+
+
 
       <TouchableOpacity
         style={[
@@ -223,6 +292,21 @@ const App = () => {
         <Text style={styles.buttonText}>Inspeção</Text>
       </TouchableOpacity>
 
+      {/* Picker para selecionar quantidade de peças */}
+      <View style={styles.pickerContainer}>
+        <Text style={styles.label}>Quantidade de Peças</Text>
+        <Picker
+          selectedValue={qtdValue}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => handleQtdValueChange(itemValue)}
+        >
+          <Picker.Item label="1" value={1} />
+          <Picker.Item label="2" value={2} />
+          <Picker.Item label="3" value={3} />
+          <Picker.Item label="4" value={4} />
+        </Picker>
+      </View>
+
       <View style={styles.actionContainer}>
         <TouchableOpacity style={styles.sendButton} onPress={handleSendCommand}>
           <Text style={styles.sendButtonText}>Enviar</Text>
@@ -231,8 +315,9 @@ const App = () => {
           <Text style={styles.clearButtonText}>Limpar</Text>
         </TouchableOpacity>
       </View>
-  
     </View>
+
+    
   );
 };
 
@@ -242,6 +327,105 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f8',
     paddingHorizontal: 20,
     paddingVertical: 15,
+  },
+  button: {
+    backgroundColor: '#4285F4',
+    marginVertical: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    paddingVertical: 15,  // Reduzido o padding vertical para botões menores
+    paddingHorizontal: 20,  // Reduzido o padding horizontal
+    borderRadius: 4,
+    width: '100%',  // Garante que o botão ocupe toda a largura disponível
+    maxWidth: 350,  // Limita a largura máxima do botão
+  },
+  selectedButton: {
+    backgroundColor: '#FBBC05',
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,  // Reduzido o tamanho da fonte para ajustar ao novo tamanho do botão
+    fontWeight: '500',
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    width: '100%',
+    maxWidth: 350,  // Define a largura máxima para as ações
+  },
+  sendButton: {
+    backgroundColor: '#34A853',
+    paddingVertical: 12,  // Botão com padding menor
+    flex: 1,
+    marginRight: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sendButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,  // Texto do botão de envio com tamanho reduzido
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    backgroundColor: '#E53935',
+    paddingVertical: 12,  // Botão com padding menor
+    flex: 1,
+    marginLeft: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,  // Texto do botão de limpar com tamanho reduzido
+    fontWeight: 'bold',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 40,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f2f2f2',
+  },
+  picker: {
+    width: '80%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
   },
   toastContainer: {
     position: 'absolute',
@@ -263,82 +447,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  button: {
-    backgroundColor: '#4285F4',
-    marginVertical: 8,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-    paddingVertical: 22,
-    paddingHorizontal: 24,
-    borderRadius: 4,
+  toastSuccess: {
+    backgroundColor: '#4CAF50',
   },
-  selectedButton: {
-    backgroundColor: '#FBBC05',
+  toastError: {
+    backgroundColor: '#f44336',
   },
-  disabledButton: {
-    backgroundColor: '#A9A9A9',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  actionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  sendButton: {
-    backgroundColor: '#34A853',
-    paddingVertical: 15,
-    flex: 1,
-    marginRight: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  sendButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  clearButton: {
-    backgroundColor: '#E53935',
-    paddingVertical: 15,
-    flex: 1,
-    marginLeft: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  clearButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 40,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+
 });
+
 
 export default App;
