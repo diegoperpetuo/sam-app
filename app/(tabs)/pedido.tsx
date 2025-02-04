@@ -17,7 +17,7 @@ const config_pedido = {
 
 const QtdPeca = async (qtdValue: number) => {
   try {
-    const response2 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${qtdValue}`, {
+    const response2 = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${qtdValue}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ const QtdPeca = async (qtdValue: number) => {
 // Função para enviar o comando ao Siemens
 const Pedido = async (totalValue: number) => {
   try {
-    const response1 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${totalValue}`, {
+    const response1 = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=${totalValue}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -64,7 +64,7 @@ const Pedido = async (totalValue: number) => {
 }
 
 const Pedido2 = async () => {
-  const response2 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=0`, {
+  const response2 = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=0`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ const Pedido2 = async () => {
 }
 
 const Pedido3 = async () => {
-  const response3 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=1`, {
+  const response3 = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}&value=1`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ const Pedido3 = async () => {
 
 const Alerta = async (setMessage: (message: string) => void, fadeAnim: Animated.Value) => {
   try {
-    const response = await fetch(`http://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`, {
+    const response = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const Alerta = async (setMessage: (message: string) => void, fadeAnim: Animated.
 
 
 const TipoPeca = async () => {
-  const response3 = await fetch(`http://localhost:8000/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=2`, {
+  const response3 = await fetch(`rw-plc-master-production.up.railway.app/plc/siemens/write?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}&value=2`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   actionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: 10,
     width: '100%',
     maxWidth: 350,  // Define a largura máxima para as ações
   },

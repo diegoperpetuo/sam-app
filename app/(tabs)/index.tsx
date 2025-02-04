@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, Alert, Button } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -6,13 +6,10 @@ import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-
 // Configurações para os comandos
 const config = {
   ip: '192.168.1.61',          // IP do Rockwell
+  ip_siemens: '192.168.1.24', // IP do Siemens
   data_type: 'BOOL',            // Tipo de dado (BOOL, INT, REAL, STRING)
   startValue: 1,                // Valor para o comando de Start
   stopValue: 0                  // Valor para o comando de Stop
@@ -21,7 +18,7 @@ const config = {
 // Função para enviar o comando de Start
 const ativarEsteira = async () => {
   try {
-      const response = await fetch(`http://localhost:8000/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
+      const response = await fetch(`rw-plc-master-production.up.railway.app/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -48,7 +45,7 @@ const ativarEsteira = async () => {
 
 const desativarEsteira = async () => {
   try {
-      const response = await fetch(`http://localhost:8000/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
+      const response = await fetch(`rw-plc-master-production.up.railway.app/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -73,20 +70,41 @@ const desativarEsteira = async () => {
   }
 };
 
+const StatusEst = async (): Promise<boolean | null> => {
+  try {
+    const response = await fetch(
+      `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config.ip_siemens}&data_type=${config.data_type}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          db_number: 29,
+          offset: 6,
+          bit_offset: 1,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    console.log('Resposta da API:', data); // Adicionado para debug
+    return data.status;
+  } catch (error) {
+    console.error('Erro ao acessar API:', error);
+    return null;
+  }
+};
 
 const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }) => {
-  const [frequencia, setFrequencia] = useState('40 Hz'); // valor inicial da frequência
+  const [statusEsteira, setStatusEsteira] = useState<boolean | null>(null);
 
-  const [ativo, setAtivo] = useState(false);
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const status = await StatusEst();
+      setStatusEsteira(status);
+    }, 2000); // Atualiza o status a cada 2 segundos
 
-  const estaçõesAtivas = [
-    { nome: 'Estação de Entrada', ativa: true },
-    { nome: 'Inspeção', ativa: false },
-    { nome: 'Limpeza', ativa: true },
-    { nome: 'Saída', ativa: false },
-  ];
-
-
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -94,22 +112,31 @@ const OperacaoScreen = ({ navigation }: { navigation: NavigationProp<any, any> }
         <Text style={styles.title}>Operação</Text>
       </View>
       <View style={styles.content}>
-        <View style={styles.buttonContainer}>
+        <View style={styles.indicatorContainer}>
+          <Text style={styles.indicatorLabel}>Status da Esteira:</Text>
+            <Text
+              style={[
+                styles.indicatorValue,
+                statusEsteira === true ? styles.statusOn : styles.statusOff,
+              ]}
+            >
+              {statusEsteira === null
+                ? 'Erro ao carregar status'
+                : statusEsteira
+                ? 'Esteira On'
+                : 'Esteira Off'}
+          </Text>
+        </View>
 
-          <TouchableOpacity style={styles.buttonAtivo}
-          onPress={ativarEsteira}
-          >
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonAtivo} onPress={ativarEsteira}>
             <Text style={styles.buttonText}>Ativar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonInativo}
-          onPress={desativarEsteira}
-          >
+          <TouchableOpacity style={styles.buttonInativo} onPress={desativarEsteira}>
             <Text style={styles.buttonText}>Desativar</Text>
           </TouchableOpacity>
-
         </View>
-
       </View>
     </View>
   );
@@ -134,67 +161,36 @@ const styles = StyleSheet.create({
   content: {
     width: '80%',
   },
+  indicatorContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  indicatorLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  indicatorValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  statusOn: {
+    color: '#34C759',
+  },
+  statusOff: {
+    color: '#FF3B3F',
+  },
   buttonContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
     marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-    borderRadius: 4,
-    marginBottom: 32,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  frequenciaContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  frequenciaLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  frequenciaValue: {
-    fontSize: 16,
-    color: '#333',
-  },
-  ledsContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  ledContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: 8,
-  },
-  led: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: 'black',
-    marginRight: 10,
-  },
-  ledAtiva: {
-    backgroundColor: '#34C759',
-  },
-  ledInativa: {
-    backgroundColor: '#FF3B3F',
-  },
-  ledText: {
-    fontSize: 24,
-    color: '#333',
   },
   buttonAtivo: {
     backgroundColor: '#34C759',
