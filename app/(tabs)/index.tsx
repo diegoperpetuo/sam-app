@@ -36,7 +36,7 @@ const ativarEsteira = async () => {
           console.log('Erro ao enviar o comando de Start');
           console.log('Status:', response.status);  // Código de status HTTP
           const responseText = await response.text();
-          console.log('Resposta:', responseText);   // Corpo da resposta do erro
+          console.log('Resposta:', responseText);   // Resposta do erro
       }
   } catch (error) {
       console.error('Erro:', error);
