@@ -18,7 +18,7 @@ const config = {
 // Função para enviar o comando de Start
 const ativarEsteira = async () => {
   try {
-      const response = await fetch(`rw-plc-master-production.up.railway.app/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
+      const response = await fetch(`https://localhost:8000/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ const ativarEsteira = async () => {
 
 const desativarEsteira = async () => {
   try {
-      const response = await fetch(`rw-plc-master-production.up.railway.app/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
+      const response = await fetch(`https://localhost:8000/plc/rockwell/write?ip=${config.ip}&data_type=${config.data_type}&value=${config.startValue}`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ const desativarEsteira = async () => {
 const StatusEst = async (): Promise<boolean | null> => {
   try {
     const response = await fetch(
-      `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config.ip_siemens}&data_type=${config.data_type}`,
+      `https://localhost:8000/plc/siemens/read?ip=${config.ip_siemens}&data_type=${config.data_type}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

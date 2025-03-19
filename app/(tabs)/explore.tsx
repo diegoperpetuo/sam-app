@@ -58,7 +58,7 @@ const App = () => {
   const fetchProducao0 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -75,7 +75,7 @@ const App = () => {
   const fetchProducao1 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -92,7 +92,7 @@ const App = () => {
   const fetchProducao2 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -109,7 +109,7 @@ const App = () => {
   const fetchProducao3 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -126,7 +126,7 @@ const App = () => {
   const est_processo0 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -144,7 +144,7 @@ const App = () => {
   const est_processo1 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -161,7 +161,7 @@ const App = () => {
   const est_processo2 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -178,7 +178,7 @@ const App = () => {
   const est_processo3 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -197,7 +197,7 @@ const App = () => {
   const fetchIdPeca0 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -218,7 +218,7 @@ const App = () => {
   const fetchIdPeca1 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -240,7 +240,7 @@ const App = () => {
   const fetchIdPeca2 = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

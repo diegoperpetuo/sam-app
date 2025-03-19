@@ -17,7 +17,7 @@ const App = () => {
   const EstEntrada = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -40,7 +40,7 @@ const App = () => {
   const EstSaida = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -63,7 +63,7 @@ const App = () => {
   const EstInspecao = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -86,7 +86,7 @@ const App = () => {
   const EstLimpeza = async () => {
     try {
       const response = await fetch(
-        `rw-plc-master-production.up.railway.app/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
+        `https://localhost:8000/plc/siemens/read?ip=${config_pedido.ip}&data_type=${config_pedido.data_type2}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
